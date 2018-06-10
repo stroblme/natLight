@@ -16,7 +16,9 @@ Requires Python
 
 Dowload Zip, extract and install via pip:
 
+```
 $ pip install .
+```
 
 ## Usage
 
@@ -27,13 +29,15 @@ python natLight2RGB.py
 
 In your python script, you can get the RGB value as Array:
 
+```python
 import natLight
 
 print natLight.convert2RGB()
-
+```
 
 You can acces the values via:
 
+```python
 import natLight
 
 rgb = natLight.convert2RGB()
@@ -41,7 +45,7 @@ rgb = natLight.convert2RGB()
 red = rgb['r']
 green = rgb['g']
 blue = rgb['b']
-
+```
 
 ## Contributing
 
