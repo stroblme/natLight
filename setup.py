@@ -5,6 +5,5 @@ setup(name='natLight2RGB',
 	  description='Natural Ligth to RGB Converter',
 	  url='https://gitlab.com/stroblme/naturalLight2RGB.git',
 	  author='Melvin Strobl',
-	  license='MIT',
-	  packages=['natlight'],
+	  packages=['natLight'],
 	  zip_safe=False)
