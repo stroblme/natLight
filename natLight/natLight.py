@@ -127,7 +127,7 @@ def colorTemp2RGB(temp):
 			blue = 138.5177312231 * log(blue) - 305.0447927307
 
 
-	return {'r':red, 'g':green,'b':blue}
+	return [red/255, green/255, blue/255]
 	
 #--------------------------------------------------------------------------
 #	Converts given UTC Time into linear Time from 0 to 1
@@ -219,6 +219,11 @@ def convert2RGB():
 	now = datetime.now()
 
 	return colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
+	
+def convert2HSV():
+	now = datetime.now()
+
+	return colorsys.rgb_to_hsv(colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute))))
 
 #--------------------------------------------------------------------------
 #	Main
@@ -237,7 +242,7 @@ def main():
 	
 	rgb = colorTemp2RGB(color)
 	
-	print("Red:\t"+str(rgb['r'])+"\nGreen:\t"+str(rgb['g'])+"\nBlue:\t"+str(rgb['b']))
+	print("Red:\t"+str(rgb[0])+"\nGreen:\t"+str(rgb[1])+"\nBlue:\t"+str(rgb[2]))
 
 if __name__ == '__main__':
 	try:
