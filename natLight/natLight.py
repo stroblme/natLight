@@ -9,12 +9,26 @@
 # 						ShawnF (2014) : Color Temp to RGB Conversion :
 # 						http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
 # Date Created:			05.06.18
-# Last Update: 			10.06.18
+# Last Update: 			17.06.18
 
 #BEGIN INIT INFO
 # Provides:		Natural Light to RGB Converter
 # Description:	Converts White to a more natural light in RGB
 #END INIT INFO
+
+
+# DISCLAIMER:
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS ``AS IS'' AND ANY
+# EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+# PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY
+# OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # */
 # //////////////////////////////////////////////////////////////////////////
@@ -25,6 +39,8 @@
 #--------------------------------------------------------------------------
 import math
 import sys
+import colorsys
+import matplotlib
 from math import log
 from datetime import date, timedelta, datetime, time, tzinfo
 
@@ -39,15 +55,18 @@ EARLIESTWAKEUPTIME = {'hr':6, 'min':30}
 EARLIESTSLEEPTIME = {'hr':22, 'min':0}
 
 # Set your preferred transition times
-MORNINGTRANSTIME = {'hr':1, 'min':0}
+MORNINGTRANSTIME = {'hr':2, 'min':0}
 EVENINGTRANSTIME = {'hr':3, 'min':0}
 
-NIGHTTIMECOLOR = 2450
+NIGHTTIMECOLOR = 2430
 DAYTIMECOLOR = 6500
 
 MORNINGSUNEFFECT = 0.1
 EVENINGSUNEFFECT = 0.2
 
+# Properties for Scale of curve plot.. Adapt to your Display size
+YAXISSCALE=14
+XAXISSCALE=220
 #--------------------------------------------------------------------------
 #	Utilities for trigonometric calculations
 #--------------------------------------------------------------------------
@@ -140,12 +159,19 @@ def utc2lin(hr, min):
 
 #--------------------------------------------------------------------------
 #	Calculates sine-wave transition with given parameters
+#	linTime: current Time in linear scale
+#	linMidTime: wake up or sleep time in linear scale
+#	linTransTime: maximum transition time from maxTemp to minTemp or vv
+#	maxTemp: upper limit for colorTemp
+#	minTemp: lower limit for colorTemp
 #--------------------------------------------------------------------------
 def transition(linTime, linMidTime, linTransTime, maxTemp, minTemp, orientation):
+	#mid value of max and min value
 	aveTemp = minTemp + (maxTemp - minTemp)/2
+	#scale factor for range of sine fct
 	scaleTemp = (maxTemp - minTemp)/2
-	
-	linScaledTime=(linTime-linMidTime)/linTransTime*math.pi
+	#actual time which is given to the sine fct
+	linScaledTime=((linTime-linMidTime)/linTransTime)*math.pi
 
 	# 	   y-shift y-orientation y-scale           x scale
 	return aveTemp+orientation*scaleTemp*math.sin(linScaledTime)
@@ -222,9 +248,78 @@ def convert2RGB():
 	
 def convert2HSV():
 	now = datetime.now()
+	rgb = colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
+	
+	return colorsys.rgb_to_hsv(rgb[0],rgb[1],rgb[2])
+	
+def setUserParameters(	_coords,
+						_earliestwakeuptime,
+						_earliestsleeptime,
+						_morningtranstime,
+						_eveningtranstime,
+						_nighttimecolor,
+						_daytimecolor,
+						_morningsuneffect,
+						_eveningsuneffect):
+	COORDS				=	coords			
+	EARLIESTWAKEUPTIME	=	earliestwakeuptime
+	EARLIESTSLEEPTIME	=	earliestsleeptime
+	MORNINGTRANSTIME	=	morningtranstime
+	EVENINGTRANSTIME	=	eveningtranstime
+	NIGHTTIMECOLOR		=	nighttimecolor	
+	DAYTIMECOLOR		=	daytimecolor	
+	MORNINGSUNEFFECT	=	morningsuneffect
+	EVENINGSUNEFFECT	=	eveningsuneffect
 
-	return colorsys.rgb_to_hsv(colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute))))
-
+def printCurve():
+	PRECISION=100
+	linTime = 0
+	data = []
+	plot = "\nCurve:\n\n"
+	
+	#Get data with iterated time
+	while (linTime < 1):
+		data.append(time2Color(linTime))
+		linTime=linTime+(1.0/XAXISSCALE)
+		
+	#iterate through temperature
+	for l in range(0,YAXISSCALE+1):
+		currTemp=DAYTIMECOLOR-(DAYTIMECOLOR-NIGHTTIMECOLOR)/YAXISSCALE*l
+		plot = plot+str(currTemp)+"\t|"
+		
+		#iterate through time
+		for c in range(0,XAXISSCALE-1):
+			#if value matches
+			if(data[c]/PRECISION>=currTemp/PRECISION):
+				plot = plot+"-"
+			else:
+				plot = plot+" "
+		plot = plot+"\n"
+	plot=plot+"\t"
+	
+	#add time axis
+	for c in range(0,XAXISSCALE+1):
+		plot = plot+"_"
+	
+	#add placeholder
+	plot = plot+"\n\t   "
+	div=XAXISSCALE/24
+	c=0
+	time=0
+	
+	#add time caption
+	while(c<XAXISSCALE):
+		if(c==div*time):
+			plot = plot+str(time)
+			if(time<10):
+				plot=plot+" "
+			time=time+1
+		elif(c<div*time-1):
+			plot=plot+" "
+		c=c+1
+		
+	#print all
+	print plot
 #--------------------------------------------------------------------------
 #	Main
 #--------------------------------------------------------------------------
@@ -243,7 +338,10 @@ def main():
 	rgb = colorTemp2RGB(color)
 	
 	print("Red:\t"+str(rgb[0])+"\nGreen:\t"+str(rgb[1])+"\nBlue:\t"+str(rgb[2]))
-
+	
+	printCurve()
+	
+		
 if __name__ == '__main__':
 	try:
 		main()

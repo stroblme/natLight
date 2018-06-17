@@ -11,6 +11,11 @@ You can modify transition time as well as your personal color temperature limits
 ## Requirements
 
 Requires Python
+	Requires matplotlib and colorsys:
+		```
+		$ pip install matplotlib
+		$ pip install colorsys
+		```
 
 ## Installation
 
@@ -19,6 +24,11 @@ Dowload Zip, extract and install via pip:
 ```
 $ pip install .
 ```
+
+Upgrade via pip:
+
+$ pip install . --upgrade
+
 
 ## Usage
 
