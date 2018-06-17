@@ -11,9 +11,8 @@ You can modify transition time as well as your personal color temperature limits
 ## Requirements
 
 Requires Python
-	Requires matplotlib and colorsys:
+	Requires and colorsys:
 		```
-		$ pip install matplotlib
 		$ pip install colorsys
 		```
 
@@ -32,7 +31,7 @@ $ pip install . --upgrade
 
 ## Usage
 
-You can run the main method of the script (which displays Sunrise, Sunset, Time and RGB Value) via:
+You can run the main method of the script (which displays Sunrise, Sunset, Time and RGB Value as well as a plot) via:
 
 python natLight2RGB.py
 
