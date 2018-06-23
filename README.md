@@ -11,10 +11,10 @@ You can modify transition time as well as your personal color temperature limits
 ## Requirements
 
 Requires Python
-	Requires and colorsys:
-		```
-		$ pip install colorsys
-		```
+Requires and colorsys:
+```
+$ pip install colorsys
+```
 
 ## Installation
 
@@ -26,8 +26,9 @@ $ pip install .
 
 Upgrade via pip:
 
+```
 $ pip install . --upgrade
-
+```
 
 ## Usage
 
