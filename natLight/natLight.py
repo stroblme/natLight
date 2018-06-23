@@ -8,6 +8,7 @@
 # 						http://thorpesoftware.com/calculating-sunrise-and-sunset/
 # 						ShawnF (2014) : Color Temp to RGB Conversion :
 # 						http://www.tannerhelland.com/4435/convert-temperature-rgb-algorithm-code/
+# 						!! There may be modifications on the code stated above !!
 # Date Created:			05.06.18
 # Last Update: 			17.06.18
 
@@ -41,32 +42,43 @@ import math
 import sys
 import colorsys
 import matplotlib
+import ConfigParser
 from math import log
 from datetime import date, timedelta, datetime, time, tzinfo
 
 #--------------------------------------------------------------------------
 #	Constants REGION
 #--------------------------------------------------------------------------
-# Set your Location depending coordinates
-COORDS = {'longitude' : 8.403653, 'latitude' : 49.006889 }
-# Set your earliest WakeUp Time
-EARLIESTWAKEUPTIME = {'hr':6, 'min':30}
-# Set your earliest Sleep Time
-EARLIESTSLEEPTIME = {'hr':22, 'min':0}
+# # Set your Location depending coordinates
+# COORDS = {'longitude' : 8.403653, 'latitude' : 49.006889 }
+# # Set your earliest WakeUp Time
+# EARLIESTWAKEUPTIME = {'hr':6, 'min':30}
+# # Set your earliest Sleep Time
+# EARLIESTSLEEPTIME = {'hr':22, 'min':0}
 
-# Set your preferred transition times
-MORNINGTRANSTIME = {'hr':2, 'min':0}
-EVENINGTRANSTIME = {'hr':3, 'min':0}
+# # Set your preferred transition times
+# MORNINGTRANSTIME = {'hr':3, 'min':0}
+# EVENINGTRANSTIME = {'hr':3, 'min':0}
 
-NIGHTTIMECOLOR = 2430
-DAYTIMECOLOR = 6500
+# # These are the maximum and minimum Color values
+# NIGHTTIMECOLOR = 2430
+# DAYTIMECOLOR = 6600
 
-MORNINGSUNEFFECT = 0.1
-EVENINGSUNEFFECT = 0.2
+# # Increasing these values will stretch the transition towards the sun event
+# MORNINGSUNEFFECT = 0.6
+# EVENINGSUNEFFECT = 0.1
 
-# Properties for Scale of curve plot.. Adapt to your Display size
-YAXISSCALE=14
-XAXISSCALE=220
+# # Set according to your suitcase. Adjust to increase the "saturation"
+# DRIVERADJUST_R = 1
+# DRIVERADJUST_G = 1
+# DRIVERADJUST_B = 1
+
+# # Properties for Scale of curve plot.. Adapt to your Display size
+# YAXISSCALE=14
+# XAXISSCALE=220
+
+
+
 #--------------------------------------------------------------------------
 #	Utilities for trigonometric calculations
 #--------------------------------------------------------------------------
@@ -146,7 +158,7 @@ def colorTemp2RGB(temp):
 			blue = 138.5177312231 * log(blue) - 305.0447927307
 
 
-	return [red/255, green/255, blue/255]
+	return [red/255*DRIVERADJUST_R, green/255*DRIVERADJUST_G, blue/255*DRIVERADJUST_B]
 	
 #--------------------------------------------------------------------------
 #	Converts given UTC Time into linear Time from 0 to 1
@@ -239,38 +251,44 @@ def time2Color(linTime):
 	return color
 
 #--------------------------------------------------------------------------
-#	Returning function for package usage
+#	Load User Config from File
 #--------------------------------------------------------------------------
-def convert2RGB():
-	now = datetime.now()
+def loadUserConfig():
+	config = ConfigParser.ConfigParser()
+	config.readfp(open(r'config.txt'))
+	
+	global COORDS, EARLIESTWAKEUPTIME, EARLIESTSLEEPTIME, MORNINGTRANSTIME, EVENINGTRANSTIME, NIGHTTIMECOLOR, DAYTIMECOLOR, MORNINGSUNEFFECT, EVENINGSUNEFFECT, DRIVERADJUST_R, DRIVERADJUST_G, DRIVERADJUST_B, YAXISSCALE, XAXISSCALE
+	
+	COORDS = {'longitude':float(config.get('COORDS','longitude')),
+			 'latitude':float(config.get('COORDS','latitude'))}
 
-	return colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
-	
-def convert2HSV():
-	now = datetime.now()
-	rgb = colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
-	
-	return colorsys.rgb_to_hsv(rgb[0],rgb[1],rgb[2])
-	
-def setUserParameters(	_coords,
-						_earliestwakeuptime,
-						_earliestsleeptime,
-						_morningtranstime,
-						_eveningtranstime,
-						_nighttimecolor,
-						_daytimecolor,
-						_morningsuneffect,
-						_eveningsuneffect):
-	COORDS				=	coords			
-	EARLIESTWAKEUPTIME	=	earliestwakeuptime
-	EARLIESTSLEEPTIME	=	earliestsleeptime
-	MORNINGTRANSTIME	=	morningtranstime
-	EVENINGTRANSTIME	=	eveningtranstime
-	NIGHTTIMECOLOR		=	nighttimecolor	
-	DAYTIMECOLOR		=	daytimecolor	
-	MORNINGSUNEFFECT	=	morningsuneffect
-	EVENINGSUNEFFECT	=	eveningsuneffect
+	EARLIESTWAKEUPTIME = {'hr':int(config.get('EARLIESTWAKEUPTIME','hr')),
+						 'min':int(config.get('EARLIESTWAKEUPTIME','min'))}
 
+	EARLIESTSLEEPTIME = {'hr':int(config.get('EARLIESTSLEEPTIME','hr')),
+						'min':int(config.get('EARLIESTSLEEPTIME','min'))}
+
+	MORNINGTRANSTIME = {'hr':int(config.get('MORNINGTRANSTIME', 'hr')),
+						'min':int(config.get('MORNINGTRANSTIME', 'min'))}
+	EVENINGTRANSTIME = {'hr':int(config.get('EVENINGTRANSTIME', 'hr')),
+						'min':int(config.get('EVENINGTRANSTIME', 'min'))}
+
+	NIGHTTIMECOLOR = int(config.get('COLORLIMITS','nighttime'))
+	DAYTIMECOLOR = int(config.get('COLORLIMITS','daytime'))
+
+	MORNINGSUNEFFECT = float(config.get('SUNEFFECT','morning'))
+	EVENINGSUNEFFECT = float(config.get('SUNEFFECT','evening'))
+
+	DRIVERADJUST_R = float(config.get('DRIVERPARAMETERS','r'))
+	DRIVERADJUST_G = float(config.get('DRIVERPARAMETERS','g'))
+	DRIVERADJUST_B = float(config.get('DRIVERPARAMETERS','b'))
+
+	YAXISSCALE = int(config.get('PLOTPARAMETERS','y'))
+	XAXISSCALE = int(config.get('PLOTPARAMETERS','X'))
+	
+#--------------------------------------------------------------------------
+#	Plots curve based on current user data
+#--------------------------------------------------------------------------
 def printCurve():
 	PRECISION=100
 	linTime = 0
@@ -302,7 +320,7 @@ def printCurve():
 		plot = plot+"_"
 	
 	#add placeholder
-	plot = plot+"\n\t   "
+	plot = plot+"\n\t "
 	div=XAXISSCALE/24
 	c=0
 	time=0
@@ -320,10 +338,35 @@ def printCurve():
 		
 	#print all
 	print plot
+	
+#--------------------------------------------------------------------------
+#	Returning function for package usage
+#--------------------------------------------------------------------------
+def convert2RGB():
+	now = datetime.now()
+
+	return colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
+	
+def convert2HSV():
+	now = datetime.now()
+	rgb = colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
+	
+	return colorsys.rgb_to_hsv(rgb[0],rgb[1],rgb[2])
+	
+def getColor(colorSpace):
+	loadUserConfig()
+	
+	if(colorSpace == 'hsv'):
+		return convert2HSV()
+	else:
+		return convert2RGB()
+
 #--------------------------------------------------------------------------
 #	Main
 #--------------------------------------------------------------------------
 def main():
+	loadUserConfig()
+	
 	today=date.today()
 	res = calcsunriseandsunset(today, COORDS)
 	print "Sunrise at:\t"+str(res['sunrise'])
@@ -343,18 +386,22 @@ def main():
 	
 		
 if __name__ == '__main__':
-	try:
+	
+	if(len(sys.argv)>1 and sys.argv[1] == '-d'):
 		main()
-	#On keyboard interrupt
-	except KeyboardInterrupt:
-		print("\nQuit cause of keyboard interrupt")
-		# quit_i2c_broker()
+	else:
+		try:
+			main()
+		#On keyboard interrupt
+		except KeyboardInterrupt:
+			print("\nQuit cause of keyboard interrupt")
+			# quit_i2c_broker()
 
-	#On IO Error interrupt
-	except IOError:
-		print("\nQuit cause of IO error")
-		# quit_i2c_broker()
-	#General Errors
-	except:
-		e = sys.exc_info()[0]
-		print( "<p>Error: %s</p>" % e )
+		#On IO Error interrupt
+		except IOError:
+			print("\nQuit cause of IO error")
+			# quit_i2c_broker()
+		#General Errors
+		except:
+			e = sys.exc_info()[0]
+			print( "<p>Error: %s</p>" % e )
