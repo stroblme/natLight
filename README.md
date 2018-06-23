@@ -36,25 +36,49 @@ You can run the main method of the script (which displays Sunrise, Sunset, Time 
 python natLight2RGB.py
 
 
-In your python script, you can get the RGB value as Array:
+In your python script, you can get the RGB or HSV values as Array using:
 
 ```python
 import natLight
 
-print natLight.convert2RGB()
+print natLight.getColor('rgb')
+print natLight.getColor('hsv')
 ```
 
-You can acces the values via:
+E.g. you can acces the values via:
 
 ```python
 import natLight
 
-rgb = natLight.convert2RGB()
+rgb = natLight.getColor('rgb')
 
 red = rgb['r']
 green = rgb['g']
 blue = rgb['b']
 ```
+
+## Configuration
+
+To adapt the behavior to your personal needs, edit the config.txt file.
+The parameters will be read on every request made to the API, so make sure you don't send requests permanently.
+
+
+[COORDS]  (Float): The location provided here will be used to calculate sunrise and sunset.
+
+[EARLIESTWAKEUPTIME] (Integer): Specify your earliest wake-up time as hour and minute.
+[EARLIESTSLEEPTIME] (Integer): Specify your earliest sleep time as hour and minute.
+
+[COLORLIMITS] (Integer): Specify the color limits for day and nighttime.
+
+[MORNINGTRANSTIME] (Intger): Increasing this value will increase the transition time frome Nightimecolor to Daytimecolor.
+[EVENINGTRANSTIME] (Integer): Increasing this value will increase the transition time frim Daytimecolor to Nightimecolor.
+
+[SUNEFFECT] (Float): Increasing these values will stretch the transition curve towards the sunrise/ sunset.
+
+[DRIVERPARAMETERS] (Float): Adapt theses values to your application to match specific driver behaviors.
+
+[PLOTPARAMETERS] (Integer): Adapt these values to your cmd-line size for correct virtualization of the color curve
+
 
 ## Contributing
 

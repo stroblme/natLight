@@ -46,6 +46,7 @@ import ConfigParser
 from math import log
 from datetime import date, timedelta, datetime, time, tzinfo
 
+<<<<<<< HEAD
 #--------------------------------------------------------------------------
 #	Constants REGION
 #--------------------------------------------------------------------------
@@ -77,6 +78,8 @@ from datetime import date, timedelta, datetime, time, tzinfo
 # YAXISSCALE=14
 # XAXISSCALE=220
 
+=======
+>>>>>>> - added config.txt
 
 
 #--------------------------------------------------------------------------
@@ -264,6 +267,7 @@ def loadUserConfig():
 
 	EARLIESTWAKEUPTIME = {'hr':int(config.get('EARLIESTWAKEUPTIME','hr')),
 						 'min':int(config.get('EARLIESTWAKEUPTIME','min'))}
+<<<<<<< HEAD
 
 	EARLIESTSLEEPTIME = {'hr':int(config.get('EARLIESTSLEEPTIME','hr')),
 						'min':int(config.get('EARLIESTSLEEPTIME','min'))}
@@ -276,6 +280,20 @@ def loadUserConfig():
 	NIGHTTIMECOLOR = int(config.get('COLORLIMITS','nighttime'))
 	DAYTIMECOLOR = int(config.get('COLORLIMITS','daytime'))
 
+=======
+
+	EARLIESTSLEEPTIME = {'hr':int(config.get('EARLIESTSLEEPTIME','hr')),
+						'min':int(config.get('EARLIESTSLEEPTIME','min'))}
+
+	MORNINGTRANSTIME = {'hr':int(config.get('MORNINGTRANSTIME', 'hr')),
+						'min':int(config.get('MORNINGTRANSTIME', 'min'))}
+	EVENINGTRANSTIME = {'hr':int(config.get('EVENINGTRANSTIME', 'hr')),
+						'min':int(config.get('EVENINGTRANSTIME', 'min'))}
+
+	NIGHTTIMECOLOR = int(config.get('COLORLIMITS','nighttime'))
+	DAYTIMECOLOR = int(config.get('COLORLIMITS','daytime'))
+
+>>>>>>> - added config.txt
 	MORNINGSUNEFFECT = float(config.get('SUNEFFECT','morning'))
 	EVENINGSUNEFFECT = float(config.get('SUNEFFECT','evening'))
 

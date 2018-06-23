@@ -10,6 +10,14 @@ min=30
 hr=22
 min=0
 
+<<<<<<< HEAD
+=======
+[COLORLIMITS]
+nighttime=2430
+daytime=6600
+
+
+>>>>>>> - added config.txt
 [MORNINGTRANSTIME]
 hr=3
 min=0
@@ -18,10 +26,13 @@ min=0
 hr=3
 min=0
 
+<<<<<<< HEAD
 [COLORLIMITS]
 nighttime=2430
 daytime=6600
 
+=======
+>>>>>>> - added config.txt
 [SUNEFFECT]
 morning=0.1
 evening=0.6
