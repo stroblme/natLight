@@ -1,17 +1,18 @@
 ## Description
 
-This small python script outputs an 'white' RGB value which varies depending on sunrise and sunset at your location as well on
+This small python script outputs an 'white' RGB/ HSV value which varies depending on sunrise and sunset at your location as well on
 your personal preferences regarding sleep and wake up times.
 
 In my case it's used to modify the RGB value of my room light to a more eye-friendly, warmer light.
 It's compareable to any blue-light filter for Displays but implemts only the color changes.
 
-You can modify transition time as well as your personal color temperature limits.
+You can modify transition time as well as your personal color temperature limits and other preferences in a config file.
 
 ## Requirements
 
 Requires Python
 Requires and colorsys:
+
 ```
 $ pip install colorsys
 ```
@@ -34,7 +35,7 @@ $ pip install . --upgrade
 
 You can run the main method of the script (which displays Sunrise, Sunset, Time and RGB Value as well as a plot) via:
 
-python natLight2RGB.py
+python natLight.py
 
 
 In your python script, you can get the RGB or HSV values as Array using:
