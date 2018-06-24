@@ -46,41 +46,6 @@ import ConfigParser
 from math import log
 from datetime import date, timedelta, datetime, time, tzinfo
 
-<<<<<<< HEAD
-#--------------------------------------------------------------------------
-#	Constants REGION
-#--------------------------------------------------------------------------
-# # Set your Location depending coordinates
-# COORDS = {'longitude' : 8.403653, 'latitude' : 49.006889 }
-# # Set your earliest WakeUp Time
-# EARLIESTWAKEUPTIME = {'hr':6, 'min':30}
-# # Set your earliest Sleep Time
-# EARLIESTSLEEPTIME = {'hr':22, 'min':0}
-
-# # Set your preferred transition times
-# MORNINGTRANSTIME = {'hr':3, 'min':0}
-# EVENINGTRANSTIME = {'hr':3, 'min':0}
-
-# # These are the maximum and minimum Color values
-# NIGHTTIMECOLOR = 2430
-# DAYTIMECOLOR = 6600
-
-# # Increasing these values will stretch the transition towards the sun event
-# MORNINGSUNEFFECT = 0.6
-# EVENINGSUNEFFECT = 0.1
-
-# # Set according to your suitcase. Adjust to increase the "saturation"
-# DRIVERADJUST_R = 1
-# DRIVERADJUST_G = 1
-# DRIVERADJUST_B = 1
-
-# # Properties for Scale of curve plot.. Adapt to your Display size
-# YAXISSCALE=14
-# XAXISSCALE=220
-
-=======
->>>>>>> - added config.txt
-
 
 #--------------------------------------------------------------------------
 #	Utilities for trigonometric calculations
@@ -258,7 +223,8 @@ def time2Color(linTime):
 #--------------------------------------------------------------------------
 def loadUserConfig():
 	config = ConfigParser.ConfigParser()
-	config.readfp(open(r'config.txt'))
+	# config.readfp(open(r'config.txt'))
+	config.read('config.cfg')
 	
 	global COORDS, EARLIESTWAKEUPTIME, EARLIESTSLEEPTIME, MORNINGTRANSTIME, EVENINGTRANSTIME, NIGHTTIMECOLOR, DAYTIMECOLOR, MORNINGSUNEFFECT, EVENINGSUNEFFECT, DRIVERADJUST_R, DRIVERADJUST_G, DRIVERADJUST_B, YAXISSCALE, XAXISSCALE
 	
@@ -267,7 +233,6 @@ def loadUserConfig():
 
 	EARLIESTWAKEUPTIME = {'hr':int(config.get('EARLIESTWAKEUPTIME','hr')),
 						 'min':int(config.get('EARLIESTWAKEUPTIME','min'))}
-<<<<<<< HEAD
 
 	EARLIESTSLEEPTIME = {'hr':int(config.get('EARLIESTSLEEPTIME','hr')),
 						'min':int(config.get('EARLIESTSLEEPTIME','min'))}
@@ -280,20 +245,6 @@ def loadUserConfig():
 	NIGHTTIMECOLOR = int(config.get('COLORLIMITS','nighttime'))
 	DAYTIMECOLOR = int(config.get('COLORLIMITS','daytime'))
 
-=======
-
-	EARLIESTSLEEPTIME = {'hr':int(config.get('EARLIESTSLEEPTIME','hr')),
-						'min':int(config.get('EARLIESTSLEEPTIME','min'))}
-
-	MORNINGTRANSTIME = {'hr':int(config.get('MORNINGTRANSTIME', 'hr')),
-						'min':int(config.get('MORNINGTRANSTIME', 'min'))}
-	EVENINGTRANSTIME = {'hr':int(config.get('EVENINGTRANSTIME', 'hr')),
-						'min':int(config.get('EVENINGTRANSTIME', 'min'))}
-
-	NIGHTTIMECOLOR = int(config.get('COLORLIMITS','nighttime'))
-	DAYTIMECOLOR = int(config.get('COLORLIMITS','daytime'))
-
->>>>>>> - added config.txt
 	MORNINGSUNEFFECT = float(config.get('SUNEFFECT','morning'))
 	EVENINGSUNEFFECT = float(config.get('SUNEFFECT','evening'))
 
