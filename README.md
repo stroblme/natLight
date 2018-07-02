@@ -17,6 +17,12 @@ Requires and colorsys:
 $ pip install colorsys
 ```
 
+Requires ConfigParser:
+
+```
+$ pip install ConfigParser
+```
+
 ## Installation
 
 Dowload Zip, extract and install via pip:

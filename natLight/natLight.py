@@ -41,8 +41,7 @@
 import math
 import sys
 import colorsys
-import matplotlib
-import ConfigParser
+import configparser
 from math import log
 from datetime import date, timedelta, datetime, time, tzinfo
 
@@ -222,7 +221,7 @@ def time2Color(linTime):
 #	Load User Config from File
 #--------------------------------------------------------------------------
 def loadUserConfig():
-	config = ConfigParser.ConfigParser()
+	config = configparser.ConfigParser()
 	# config.readfp(open(r'config.txt'))
 	config.read('config.cfg')
 	
@@ -271,7 +270,7 @@ def printCurve():
 		
 	#iterate through temperature
 	for l in range(0,YAXISSCALE+1):
-		currTemp=DAYTIMECOLOR-(DAYTIMECOLOR-NIGHTTIMECOLOR)/YAXISSCALE*l
+		currTemp=int(DAYTIMECOLOR-(DAYTIMECOLOR-NIGHTTIMECOLOR)/YAXISSCALE*l)
 		plot = plot+str(currTemp)+"\t|"
 		
 		#iterate through time
@@ -306,7 +305,7 @@ def printCurve():
 		c=c+1
 		
 	#print all
-	print plot
+	print(plot)
 	
 #--------------------------------------------------------------------------
 #	Returning function for package usage
@@ -338,8 +337,8 @@ def main():
 	
 	today=date.today()
 	res = calcsunriseandsunset(today, COORDS)
-	print "Sunrise at:\t"+str(res['sunrise'])
-	print "Sunset at:\t"+str(res['sunset'])
+	print("Sunrise at:\t"+str(res['sunrise']))
+	print("Sunset at:\t"+str(res['sunset']))
 	
 	now = datetime.now()
 	print("Current Time:\t"+str(now.hour)+":"+str(now.minute))
