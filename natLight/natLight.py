@@ -41,7 +41,11 @@
 import math
 import sys
 import colorsys
-import configparser
+# Pyhton 2 / 3 fallback
+try:
+	import configparser
+except:
+	import ConfigParser
 from math import log
 from datetime import date, timedelta, datetime, time, tzinfo
 
@@ -221,7 +225,10 @@ def time2Color(linTime):
 #	Load User Config from File
 #--------------------------------------------------------------------------
 def loadUserConfig():
-	config = configparser.ConfigParser()
+	try:
+		config = configparser.ConfigParser()
+	except:
+		config = ConfigParser.ConfigParser()
 	# config.readfp(open(r'config.txt'))
 	config.read('config.cfg')
 	
