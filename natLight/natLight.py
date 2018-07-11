@@ -225,6 +225,7 @@ def time2Color(linTime):
 #	Load User Config from File
 #--------------------------------------------------------------------------
 def loadUserConfig():
+	#TODO: Check if there is something more convenient
 	try:
 		config = configparser.ConfigParser()
 	except:

@@ -10,8 +10,9 @@ You can modify transition time as well as your personal color temperature limits
 
 ## Requirements
 
-Requires Python
-Requires and colorsys:
+Requires Python(3)
+
+Requires colorsys:
 
 ```
 $ pip install colorsys
@@ -36,6 +37,9 @@ Upgrade via pip:
 ```
 $ pip install . --upgrade
 ```
+
+Copy the config.cfg file to the folder where your script using natLight is located.
+
 
 ## Usage
 
@@ -81,11 +85,17 @@ COLORLIMITS			(Integer): Specify the color limits for day and nighttime.
 MORNINGTRANSTIME	(Intger): Increasing this value will increase the transition time frome Nightimecolor to Daytimecolor.
 EVENINGTRANSTIME	(Integer): Increasing this value will increase the transition time frim Daytimecolor to Nightimecolor.
 
-SUNEFFECT			(Float): Increasing these values will stretch the transition curve towards the sunrise/ sunset.
+SUNEFFECT			(Float: (0..1)): Increasing these values will stretch the transition curve towards the sunrise/ sunset.
 
-DRIVERPARAMETERS	(Float): Adapt theses values to your application to match specific driver behaviors.
+DRIVERPARAMETERS	(Float: (0..1)): Adapt theses values to your application to match specific driver behaviors. Decreasing the values will decrease the intensity of the specific color.
 
 PLOTPARAMETERS		(Integer): Adapt these values to your cmd-line size for correct virtualization of the color curve
+
+
+If not otherwise specified, the valid range of the parameters is the common range e.g. hour between 0..24 and m between 0..60.
+You can play with these values to match your favourite behavior, but they are already set to the most common color curve per default.
+Pay attention when adjusting these values: There is not always a fallback or recheck of the valid range.
+It is therefore recommended to plot the color curve before firing this on a standalone system.
 
 
 ## Contributing
