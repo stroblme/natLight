@@ -303,12 +303,12 @@ def printCurve():
 	
 	#add time caption
 	while(c<XAXISSCALE):
-		if(c==int(div*time)):
+		if(c==div*time):
 			plot = plot+str(time)
 			if(time<10):
 				plot=plot+" "
 			time=time+1
-		elif(c<div*time-2):
+		elif(c<div*time-1):
 			plot=plot+" "
 		c=c+1
 		

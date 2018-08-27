@@ -3,10 +3,12 @@
 This small python script outputs an 'white' RGB/ HSV value which varies depending on sunrise and sunset at your location as well on
 your personal preferences regarding sleep and wake up times.
 
+The project is intended to be used in a custom environment acting as "white light value provider".
 In my case it's used to modify the RGB value of my room light to a more eye-friendly, warmer light.
 It's compareable to any blue-light filter for Displays but implemts only the color changes.
 
 You can modify transition time as well as your personal color temperature limits and other preferences in a config file.
+
 
 ## Requirements
 
@@ -25,6 +27,14 @@ $ pip install ConfigParser
 ```
 
 ## Installation
+
+Either directly via pip:
+
+```
+$ pip install natLight
+```
+
+... or ...
 
 Dowload Zip, extract and install via pip:
 
