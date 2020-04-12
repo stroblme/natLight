@@ -2,7 +2,7 @@
 
 # //////////////////////////////////////////////////////////////////////////
 # /*
-# Titel:				Python Natural Light 2 RGB Converter 
+# Titel:				Python Natural Light 2 RGB Converter
 # Author:				Melvin Strobl
 # Credits:				Carlos Platoni (2015) : Sunset and Sunrise calculation
 # 						http://thorpesoftware.com/calculating-sunrise-and-sunset/
@@ -66,7 +66,7 @@ def calculatetimefromjuliandate(julianDate):
 	julianDate=julianDate+.5
 	secs=int((julianDate-int(julianDate))*24*60*60+.5)
 	mins=int(secs/60)
-	hour=int(mins/60)  
+	hour=int(mins/60)
 	return time(hour, mins % 60, secs % 60)
 
 #--------------------------------------------------------------------------
@@ -77,7 +77,7 @@ def calcsunriseandsunset(date, coord):
 	y = date.year+4800-a
 	m = date.month+12*a -3
 	julian_date=date.day+math.floor((153*m+2)/5)+365*y+math.floor(y/4)-math.floor(y/100)+math.floor(y/400)-32045
-	
+
 	longitude=coord['longitude'] #West
 	latitude=coord['latitude'] #North
 
@@ -93,8 +93,8 @@ def calcsunriseandsunset(date, coord):
 	jstarstar=2451545.0+0.0009+((H+longitude)/360)+n
 	jset=jstarstar+(0.0053*sinrad(M))-(0.0069*sinrad(2*l))
 	jrise=jtransit-(jset-jtransit)
-	
-	return {'sunrise':calculatetimefromjuliandate(jrise), 
+
+	return {'sunrise':calculatetimefromjuliandate(jrise),
 			'sunset':calculatetimefromjuliandate(jset)}
 
 #--------------------------------------------------------------------------
@@ -130,14 +130,14 @@ def colorTemp2RGB(temp):
 
 
 	return [red/255*DRIVERADJUST_R, green/255*DRIVERADJUST_G, blue/255*DRIVERADJUST_B]
-	
+
 #--------------------------------------------------------------------------
 #	Converts given UTC Time into linear Time from 0 to 1
 #--------------------------------------------------------------------------
 def utc2lin(hr, min):
 	linMin = min/60.0/24.0
 	linHr = hr/24.0
-	
+
 	return (linHr+linMin)
 
 #--------------------------------------------------------------------------
@@ -161,44 +161,44 @@ def transition(linTime, linMidTime, linTransTime, maxTemp, minTemp, orientation)
 
 #--------------------------------------------------------------------------
 #	Calculates Sunrise and Sunset time from class sun into linear time
-#--------------------------------------------------------------------------	
+#--------------------------------------------------------------------------
 def adaptTime2Sun(linEventTime, linTransTime, beforeMidday):
 	today=date.today()
 	res = calcsunriseandsunset(today, COORDS)
 
 	if beforeMidday:
 		sunrise={'hr':res['sunrise'].hour, 'min':res['sunrise'].minute}
-		
+
 		linSunrise = utc2lin(sunrise['hr'], sunrise['min'])
-		
+
 		linEventTime = linEventTime - MORNINGSUNEFFECT*(linEventTime-linSunrise)
 		linTransTime = linTransTime - MORNINGSUNEFFECT*(linEventTime-linSunrise)
-		
+
 	else:
 		sunset={'hr':res['sunset'].hour, 'min':res['sunset'].minute}
 
 		linSunset = utc2lin(sunset['hr'], sunset['min'])
-		
+
 		linEventTime = linEventTime - EVENINGSUNEFFECT*(linEventTime-linSunset)
 		linTransTime = linTransTime - EVENINGSUNEFFECT*(linEventTime-linSunset)
-		
+
 	return {
-		'linEvent':linEventTime, 
+		'linEvent':linEventTime,
 		'linTrans':linTransTime
 	}
-	
+
 #--------------------------------------------------------------------------
-#	Calculates White RGB into a smoother color using Sunset and 
+#	Calculates White RGB into a smoother color using Sunset and
 #	Sunrise Information
 #--------------------------------------------------------------------------
 def time2Color(linTime):
 	if(linTime < utc2lin(12,00)): #Before Midday
 		linTransTime = utc2lin(MORNINGTRANSTIME['hr'], MORNINGTRANSTIME['min'])
 		linWakeUpTime = utc2lin(EARLIESTWAKEUPTIME['hr'], EARLIESTWAKEUPTIME['min'])
-		
+
 		linWakeUpTime = adaptTime2Sun(linWakeUpTime, linTransTime, True)['linEvent']
 		linTransTime = adaptTime2Sun(linWakeUpTime, linTransTime, True)['linTrans']
-		
+
 		if abs(linWakeUpTime - linTime) < linTransTime/2: #within transition zone
 			color = transition(linTime, linWakeUpTime, linTransTime, DAYTIMECOLOR, NIGHTTIMECOLOR, +1)
 		elif linTime < linWakeUpTime: #nighttime
@@ -208,17 +208,17 @@ def time2Color(linTime):
 	else: #After Midday
 		linTransTime = utc2lin(EVENINGTRANSTIME['hr'], EVENINGTRANSTIME['min'])
 		linSleepTime = utc2lin(EARLIESTSLEEPTIME['hr'], EARLIESTSLEEPTIME['min'])
-		
+
 		linSleepTime= adaptTime2Sun(linSleepTime, linTransTime, False)['linEvent']
 		linTransTime = adaptTime2Sun(linSleepTime, linTransTime, False)['linTrans']
-		
+
 		if abs(linSleepTime - linTime) < linTransTime/2: #within transition zone
 			color = transition(linTime, linSleepTime, linTransTime, DAYTIMECOLOR, NIGHTTIMECOLOR, -1)
 		elif linTime < linSleepTime: #daytime
 			color = DAYTIMECOLOR
 		else: #nighttime
 			color = NIGHTTIMECOLOR
-	
+
 	return color
 
 #--------------------------------------------------------------------------
@@ -231,10 +231,10 @@ def loadUserConfig():
 	except:
 		config = ConfigParser.ConfigParser()
 	# config.readfp(open(r'config.txt'))
-	config.read('config.cfg')
-	
+	config.read('natlight.cfg')
+
 	global COORDS, EARLIESTWAKEUPTIME, EARLIESTSLEEPTIME, MORNINGTRANSTIME, EVENINGTRANSTIME, NIGHTTIMECOLOR, DAYTIMECOLOR, MORNINGSUNEFFECT, EVENINGSUNEFFECT, DRIVERADJUST_R, DRIVERADJUST_G, DRIVERADJUST_B, YAXISSCALE, XAXISSCALE
-	
+
 	COORDS = {'longitude':float(config.get('COORDS','longitude')),
 			 'latitude':float(config.get('COORDS','latitude'))}
 
@@ -261,7 +261,7 @@ def loadUserConfig():
 
 	YAXISSCALE = int(config.get('PLOTPARAMETERS','y'))
 	XAXISSCALE = int(config.get('PLOTPARAMETERS','X'))
-	
+
 #--------------------------------------------------------------------------
 #	Plots curve based on current user data
 #--------------------------------------------------------------------------
@@ -270,17 +270,17 @@ def printCurve():
 	linTime = 0
 	data = []
 	plot = "\nCurve:\n\n"
-	
+
 	#Get data with iterated time
 	while (linTime < 1):
 		data.append(time2Color(linTime))
 		linTime=linTime+(1.0/XAXISSCALE)
-		
+
 	#iterate through temperature
 	for l in range(0,YAXISSCALE+1):
 		currTemp=int(DAYTIMECOLOR-(DAYTIMECOLOR-NIGHTTIMECOLOR)/YAXISSCALE*l)
 		plot = plot+str(currTemp)+"\t|"
-		
+
 		#iterate through time
 		for c in range(0,XAXISSCALE-1):
 			#if value matches
@@ -290,17 +290,17 @@ def printCurve():
 				plot = plot+" "
 		plot = plot+"\n"
 	plot=plot+"\t"
-	
+
 	#add time axis
 	for c in range(0,XAXISSCALE+1):
 		plot = plot+"_"
-	
+
 	#add placeholder
 	plot = plot+"\n\t "
 	div=XAXISSCALE/24
 	c=0
 	time=0
-	
+
 	#add time caption
 	while(c<XAXISSCALE):
 		if(c==int(div*time)):
@@ -311,10 +311,10 @@ def printCurve():
 		elif(c<div*time-2):
 			plot=plot+" "
 		c=c+1
-		
+
 	#print all
 	print(plot)
-	
+
 #--------------------------------------------------------------------------
 #	Returning function for package usage
 #--------------------------------------------------------------------------
@@ -322,16 +322,16 @@ def convert2RGB():
 	now = datetime.now()
 
 	return colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
-	
+
 def convert2HSV():
 	now = datetime.now()
 	rgb = colorTemp2RGB(time2Color(utc2lin(now.hour, now.minute)))
-	
+
 	return colorsys.rgb_to_hsv(rgb[0],rgb[1],rgb[2])
-	
+
 def getColor(colorSpace):
 	loadUserConfig()
-	
+
 	if(colorSpace == 'hsv'):
 		return convert2HSV()
 	else:
@@ -342,27 +342,27 @@ def getColor(colorSpace):
 #--------------------------------------------------------------------------
 def main():
 	loadUserConfig()
-	
+
 	today=date.today()
 	res = calcsunriseandsunset(today, COORDS)
 	print("Sunrise at:\t"+str(res['sunrise']))
 	print("Sunset at:\t"+str(res['sunset']))
-	
+
 	now = datetime.now()
 	print("Current Time:\t"+str(now.hour)+":"+str(now.minute))
-	
+
 	color = time2Color(utc2lin(now.hour, now.minute))
 	print("Calculated Color Temperature:\t"+str(color))
-	
+
 	rgb = colorTemp2RGB(color)
-	
+
 	print("Red:\t"+str(rgb[0])+"\nGreen:\t"+str(rgb[1])+"\nBlue:\t"+str(rgb[2]))
-	
+
 	printCurve()
-	
-		
+
+
 if __name__ == '__main__':
-	
+
 	if(len(sys.argv)>1 and sys.argv[1] == '-d'):
 		main()
 	else:

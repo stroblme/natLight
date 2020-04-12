@@ -1,5 +1,5 @@
 build
 venv
-dist
 .vscode
 *.pyc
+distribute.cmd

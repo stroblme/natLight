@@ -12,13 +12,7 @@ You can modify transition time as well as your personal color temperature limits
 
 ## Requirements
 
-Requires Python(3)
-
-Requires colorsys:
-
-```
-$ pip install colorsys
-```
+Requires Python >=3.6
 
 Requires ConfigParser:
 
