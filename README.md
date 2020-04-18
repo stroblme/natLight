@@ -61,7 +61,7 @@ print natLight.getColor('rgb')
 print natLight.getColor('hsv')
 ```
 
-E.g. you can acces the values via:
+E.g. you can access the values via:
 
 ```python
 import natLight
